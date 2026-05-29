@@ -246,6 +246,8 @@ textarea:focus {
   padding: 20px;
   width: 85%;
   max-width: 340px;
+  max-height: 90vh;
+  overflow-y: auto;
   text-align: center;
 }
 
