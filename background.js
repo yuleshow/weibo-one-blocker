@@ -1,93 +1,10 @@
 // Background service worker
 
-const BLOCKLIST_URLS = [
-  "https://cdn.jsdelivr.net/gh/yuleshow/weibo-one-blocker@main/blocklist.js",
-  "https://raw.githubusercontent.com/yuleshow/weibo-one-blocker/main/blocklist.js",
-  "https://fastly.jsdelivr.net/gh/yuleshow/weibo-one-blocker@main/blocklist.js",
-];
-const SYNC_ALARM = "syncBlocklist";
-const SYNC_INTERVAL_MINUTES = 60; // sync every hour
-
-// --- Blocklist sync ---
-
-function parseBlocklistText(text) {
-  // Extract name and alts fields without eval (MV3 CSP blocks eval)
-  const names = [];
-  const nameMatches = text.matchAll(/name:\s*"([^"]+)"/g);
-  for (const m of nameMatches) names.push(m[1]);
-  const altMatches = text.matchAll(/alts:\s*\[([^\]]*)\]/g);
-  for (const m of altMatches) {
-    const alts = m[1].matchAll(/"([^"]+)"/g);
-    for (const a of alts) names.push(a[1]);
-  }
-  if (names.length === 0) return null;
-  return { names, fetchedAt: Date.now() };
-}
-
-async function fetchRemoteBlocklist() {
-  for (const url of BLOCKLIST_URLS) {
-    try {
-      const res = await fetch(url, { cache: "no-cache" });
-      if (!res.ok) continue;
-      const text = await res.text();
-      const data = parseBlocklistText(text);
-      if (data) {
-        data.source = url;
-        return data;
-      }
-    } catch (e) {
-      console.warn("[weibo-blocker] fetch failed:", url, e.message);
-    }
-  }
-  console.error("[weibo-blocker] all sync sources failed");
-  return null;
-}
-
-async function syncBlocklist() {
-  const data = await fetchRemoteBlocklist();
-  if (data) {
-    await chrome.storage.local.set({ remoteBlocklist: data });
-    console.log("[weibo-blocker] synced", data.names.length, "names from remote");
-  }
-}
-
-// On install / update: sync immediately + set up alarm
-chrome.runtime.onInstalled.addListener(() => {
-  syncBlocklist();
-  chrome.alarms.create(SYNC_ALARM, { periodInMinutes: SYNC_INTERVAL_MINUTES });
-});
-
-// On startup: sync
-chrome.runtime.onStartup.addListener(() => {
-  syncBlocklist();
-});
-
-// Periodic alarm
-chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === SYNC_ALARM) syncBlocklist();
-});
-
-// --- Message handling ---
-
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "blockUser" || message.action === "resolveScreenName") {
     handleMessage(message).then(sendResponse, (e) =>
       sendResponse({ ok: false, msg: "bg-error: " + String(e) })
     );
-    return true;
-  }
-  if (message.action === "syncBlocklist") {
-    syncBlocklist().then(() => {
-      chrome.storage.local.get("remoteBlocklist", (d) => {
-        sendResponse(d.remoteBlocklist || null);
-      });
-    });
-    return true;
-  }
-  if (message.action === "getRemoteBlocklist") {
-    chrome.storage.local.get("remoteBlocklist", (d) => {
-      sendResponse(d.remoteBlocklist || null);
-    });
     return true;
   }
 });

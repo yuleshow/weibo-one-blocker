@@ -8,16 +8,12 @@
     "activeTab",
     "scripting",
     "tabs",
-    "storage",
-    "alarms"
+    "storage"
   ],
   "host_permissions": [
     "https://weibo.com/*",
     "https://www.weibo.com/*",
-    "https://*.weibo.com/*",
-    "https://raw.githubusercontent.com/*",
-    "https://cdn.jsdelivr.net/*",
-    "https://fastly.jsdelivr.net/*"
+    "https://*.weibo.com/*"
   ],
   "action": {
     "default_popup": "popup.html",
