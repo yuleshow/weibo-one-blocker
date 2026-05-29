@@ -249,6 +249,13 @@ textarea:focus {
   text-align: center;
 }
 
+.about-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
 .modal-content h3 {
   color: #e6162d;
   margin-bottom: 10px;
