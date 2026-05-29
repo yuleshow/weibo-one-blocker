@@ -190,11 +190,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  // Dev: reload extension
-  document.getElementById("reloadBtn").addEventListener("click", () => {
-    chrome.runtime.reload();
-  });
-
   // About modal
   const aboutModal = document.getElementById("aboutModal");
   document.getElementById("aboutLink").addEventListener("click", (e) => {
