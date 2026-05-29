@@ -11,16 +11,17 @@ const SYNC_INTERVAL_MINUTES = 60; // sync every hour
 // --- Blocklist sync ---
 
 function parseBlocklistText(text) {
-  const match = text.match(/const\s+BLOCKLIST\s*=\s*(\[[\s\S]*?\]);/);
-  if (!match) return null;
-  const arr = (0, eval)("(" + match[1] + ")");
-  if (!Array.isArray(arr)) return null;
+  // Extract name and alts fields without eval (MV3 CSP blocks eval)
   const names = [];
-  arr.forEach((entry) => {
-    if (entry.name) names.push(entry.name);
-    if (entry.alts) entry.alts.forEach((a) => names.push(a));
-  });
-  return { entries: arr, names, fetchedAt: Date.now() };
+  const nameMatches = text.matchAll(/name:\s*"([^"]+)"/g);
+  for (const m of nameMatches) names.push(m[1]);
+  const altMatches = text.matchAll(/alts:\s*\[([^\]]*)\]/g);
+  for (const m of altMatches) {
+    const alts = m[1].matchAll(/"([^"]+)"/g);
+    for (const a of alts) names.push(a[1]);
+  }
+  if (names.length === 0) return null;
+  return { names, fetchedAt: Date.now() };
 }
 
 async function fetchRemoteBlocklist() {
