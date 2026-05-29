@@ -1,33 +1,45 @@
 // Background service worker
 
-const BLOCKLIST_URL = "https://raw.githubusercontent.com/yuleshow/weibo-one-blocker/main/blocklist.js";
+const BLOCKLIST_URLS = [
+  "https://cdn.jsdelivr.net/gh/yuleshow/weibo-one-blocker@main/blocklist.js",
+  "https://raw.githubusercontent.com/yuleshow/weibo-one-blocker/main/blocklist.js",
+  "https://fastly.jsdelivr.net/gh/yuleshow/weibo-one-blocker@main/blocklist.js",
+];
 const SYNC_ALARM = "syncBlocklist";
 const SYNC_INTERVAL_MINUTES = 60; // sync every hour
 
 // --- Blocklist sync ---
 
+function parseBlocklistText(text) {
+  const match = text.match(/const\s+BLOCKLIST\s*=\s*(\[[\s\S]*?\]);/);
+  if (!match) return null;
+  const arr = (0, eval)("(" + match[1] + ")");
+  if (!Array.isArray(arr)) return null;
+  const names = [];
+  arr.forEach((entry) => {
+    if (entry.name) names.push(entry.name);
+    if (entry.alts) entry.alts.forEach((a) => names.push(a));
+  });
+  return { entries: arr, names, fetchedAt: Date.now() };
+}
+
 async function fetchRemoteBlocklist() {
-  try {
-    const res = await fetch(BLOCKLIST_URL, { cache: "no-cache" });
-    if (!res.ok) return null;
-    const text = await res.text();
-    // Parse the JS: extract the array between [ and ];
-    const match = text.match(/const\s+BLOCKLIST\s*=\s*(\[[\s\S]*?\]);/);
-    if (!match) return null;
-    // Use indirect eval to parse the array literal safely in service worker
-    const arr = (0, eval)("(" + match[1] + ")");
-    if (!Array.isArray(arr)) return null;
-    // Flatten to name list
-    const names = [];
-    arr.forEach((entry) => {
-      if (entry.name) names.push(entry.name);
-      if (entry.alts) entry.alts.forEach((a) => names.push(a));
-    });
-    return { entries: arr, names, fetchedAt: Date.now() };
-  } catch (e) {
-    console.error("[weibo-blocker] sync error:", e);
-    return null;
+  for (const url of BLOCKLIST_URLS) {
+    try {
+      const res = await fetch(url, { cache: "no-cache" });
+      if (!res.ok) continue;
+      const text = await res.text();
+      const data = parseBlocklistText(text);
+      if (data) {
+        data.source = url;
+        return data;
+      }
+    } catch (e) {
+      console.warn("[weibo-blocker] fetch failed:", url, e.message);
+    }
   }
+  console.error("[weibo-blocker] all sync sources failed");
+  return null;
 }
 
 async function syncBlocklist() {
