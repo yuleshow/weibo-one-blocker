@@ -3,6 +3,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const blockBtn = document.getElementById("blockBtn");
   const clearBtn = document.getElementById("clearBtn");
   const loadListBtn = document.getElementById("loadListBtn");
+  const syncBtn = document.getElementById("syncBtn");
+  const syncInfo = document.getElementById("syncInfo");
+  const syncText = document.getElementById("syncText");
   const statusBar = document.getElementById("statusBar");
   const statusText = document.getElementById("statusText");
   const delayInput = document.getElementById("delay");
@@ -23,23 +26,64 @@ document.addEventListener("DOMContentLoaded", () => {
     chrome.storage.local.set({ delay: delayInput.value });
   });
 
-  // Load pre-defined blocklist
-  loadListBtn.addEventListener("click", () => {
-    if (typeof BLOCKLIST === "undefined" || BLOCKLIST.length === 0) {
+  // Load pre-defined blocklist (local + remote merged)
+  loadListBtn.addEventListener("click", async () => {
+    const names = new Set();
+    // Local bundled list
+    if (typeof BLOCKLIST !== "undefined" && BLOCKLIST.length > 0) {
+      BLOCKLIST.forEach((entry) => {
+        names.add(entry.name);
+        if (entry.alts) entry.alts.forEach((a) => names.add(a));
+      });
+    }
+    // Remote synced list
+    const remote = await chrome.runtime.sendMessage({ action: "getRemoteBlocklist" });
+    if (remote && remote.names) {
+      remote.names.forEach((n) => names.add(n));
+    }
+    if (names.size === 0) {
       setStatus("黑名单为空", "error");
       return;
     }
-    const names = [];
-    BLOCKLIST.forEach((entry) => {
-      names.push(entry.name);
-      if (entry.alts) {
-        entry.alts.forEach((alt) => names.push(alt));
-      }
-    });
+    const nameArr = [...names];
     const existing = uidList.value.trim();
-    uidList.value = existing ? existing + "\n" + names.join("\n") : names.join("\n");
+    uidList.value = existing ? existing + "\n" + nameArr.join("\n") : nameArr.join("\n");
     chrome.storage.local.set({ savedUids: uidList.value });
-    setStatus(`已加载 ${names.length} 个用户名（含小号）`, "success");
+    setStatus(`已加载 ${nameArr.length} 个用户名（本地+远程去重）`, "success");
+    showSyncInfo(remote);
+  });
+
+  // Manual sync from GitHub
+  syncBtn.addEventListener("click", async () => {
+    syncBtn.disabled = true;
+    syncBtn.textContent = "⏳ 同步中...";
+    try {
+      const data = await chrome.runtime.sendMessage({ action: "syncBlocklist" });
+      if (data && data.names) {
+        setStatus(`远程同步成功：${data.names.length} 个用户名`, "success");
+        showSyncInfo(data);
+      } else {
+        setStatus("同步失败，请检查网络", "error");
+      }
+    } catch (e) {
+      setStatus("同步异常: " + e.message, "error");
+    }
+    syncBtn.disabled = false;
+    syncBtn.textContent = "🔄 同步远程";
+  });
+
+  // Show last sync time
+  function showSyncInfo(remote) {
+    if (remote && remote.fetchedAt) {
+      syncInfo.style.display = "block";
+      const d = new Date(remote.fetchedAt);
+      syncText.textContent = `远程黑名单：${remote.names.length} 人，上次同步：${d.toLocaleString("zh-CN")}`;
+    }
+  }
+
+  // On popup open, show sync info
+  chrome.runtime.sendMessage({ action: "getRemoteBlocklist" }, (remote) => {
+    showSyncInfo(remote);
   });
 
   clearBtn.addEventListener("click", () => {

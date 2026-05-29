@@ -19,8 +19,13 @@
 
     <div class="actions">
       <button id="loadListBtn" class="btn btn-primary">📋 加载黑名单</button>
+      <button id="syncBtn" class="btn btn-secondary" title="从 GitHub 同步最新黑名单">🔄 同步远程</button>
       <button id="blockBtn" class="btn btn-danger">🚫 一键拉黑</button>
       <button id="clearBtn" class="btn btn-secondary">清空</button>
+    </div>
+
+    <div id="syncInfo" class="sync-info" style="display:none;">
+      <span id="syncText"></span>
     </div>
 
     <div class="options">

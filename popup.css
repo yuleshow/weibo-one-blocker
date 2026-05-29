@@ -180,6 +180,16 @@ textarea:focus {
   text-align: center;
 }
 
+.sync-info {
+  margin-top: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: #888;
+  background: #f0f0f0;
+  border-radius: 4px;
+  text-align: center;
+}
+
 .footer p {
   font-size: 11px;
   color: #bbb;

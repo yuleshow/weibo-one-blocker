@@ -1,14 +1,15 @@
 {
   "manifest_version": 3,
   "name": "Weibo One-Click Blocker",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "One-click batch block users on Weibo",
   "permissions": [
     "cookies",
     "activeTab",
     "scripting",
     "tabs",
-    "storage"
+    "storage",
+    "alarms"
   ],
   "host_permissions": [
     "https://weibo.com/*",
