@@ -14,7 +14,8 @@
   "host_permissions": [
     "https://weibo.com/*",
     "https://www.weibo.com/*",
-    "https://*.weibo.com/*"
+    "https://*.weibo.com/*",
+    "https://raw.githubusercontent.com/*"
   ],
   "action": {
     "default_popup": "popup.html",
