@@ -250,9 +250,9 @@ textarea:focus {
 }
 
 .about-logo {
-  width: 96px;
-  height: 96px;
-  border-radius: 16px;
+  width: 128px;
+  height: 128px;
+  border-radius: 20px;
   margin-bottom: 12px;
 }
 
@@ -265,8 +265,8 @@ textarea:focus {
 }
 
 .author-avatar {
-  width: 20px;
-  height: 20px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
 }
 
