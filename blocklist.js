@@ -1,6 +1,6 @@
 // Pre-defined blocklist of Weibo screen names to block
 const BLOCKLIST = [
-  // ─── 第一类：包粉核心圈 ───
+  // ─── 第一类：〇粉核心圈 ───
   { name: "王虎的舰桥", alts: ["吴知山"], note: "本名陈尧，知乎black枪骑兵" },
   { name: "御史在野", alts: ["防务的避风港"] },
   { name: "V闪闪" },
