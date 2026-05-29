@@ -1,0 +1,45 @@
+// Pre-defined blocklist of Weibo screen names to block
+const BLOCKLIST = [
+  // ─── 第一类：包粉核心圈 ───
+  { name: "王虎的舰桥", alts: ["吴知山"], note: "本名陈尧，知乎black枪骑兵" },
+  { name: "御史在野", alts: ["防务的避风港"] },
+  { name: "V闪闪" },
+  { name: "-四分三十三秒-" },
+  { name: "2049年的世界" },
+  { name: "近卫步兵师" },
+
+  // ─── 第二类：七字爱国大V ───
+  { name: "别梦依稀笑逝川" },
+  { name: "包容万物恒河水" },
+  { name: "浪里赤条小粗林", alts: ["小嘛小二浪呀"] },
+  { name: "盖世英雄玉椒龙" },
+  { name: "提刀探花在缅北" },
+  { name: "洋务先驱张之洞" },
+  { name: "青春亮丽佩洛西" },
+
+  // ─── 第三类：其他典型 ───
+  { name: "creamy蕉" },
+  { name: "jokielicious" },
+  { name: "Finance鸟不飞" },
+  { name: "金靴redboy" },
+  { name: "ForAuthoritarianism" },
+  { name: "杨光张" },
+  { name: "库珀太太" },
+  { name: "笛卡吾", alts: ["拉瓦U", "科学家种太阳"], note: "本名沈杰" },
+  { name: "风息神泪" },
+  { name: "赵盛烨" },
+  { name: "子午侠士", note: "本名冯立安" },
+  { name: "司马平邦" },
+  { name: "一领淡鹅黄" },
+  { name: "桔子猫猫糖", alts: ["苹果兔兔糖"] },
+  { name: "卖呓不卖呻" },
+  { name: "大风吹奏" },
+  { name: "禾几日月" },
+  { name: "格竹熊" },
+  { name: "止谣君" },
+  { name: "汪海林" },
+  { name: "汴人郭威" },
+  { name: "好叨叨还是少叨叨" },
+  { name: "领事闲谈" },
+  { name: "三个老爸实验室" },
+];

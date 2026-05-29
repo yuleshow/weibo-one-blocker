@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weibo One-Click Blocker</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h1>微博一键拉黑</h1>
+    <p class="hint">请先登录 weibo.com，输入用户名或 UID（每行一个）</p>
+
+    <div class="status-bar" id="statusBar">
+      <span id="statusText">就绪</span>
+    </div>
+
+    <textarea id="uidList" placeholder="输入用户名或 UID，每行一个，例如：&#10;王虎的舰桥&#10;1234567890&#10;https://weibo.com/u/1234567890"></textarea>
+
+    <div class="actions">
+      <button id="loadListBtn" class="btn btn-primary">📋 加载黑名单</button>
+      <button id="blockBtn" class="btn btn-danger">🚫 一键拉黑</button>
+      <button id="clearBtn" class="btn btn-secondary">清空</button>
+    </div>
+
+    <div class="options">
+      <label>
+        <span>请求间隔（毫秒）：</span>
+        <input type="number" id="delay" value="1000" min="500" max="10000" step="100">
+      </label>
+    </div>
+
+    <div id="resultArea" class="result-area" style="display:none;">
+      <h3>执行结果</h3>
+      <div id="resultList"></div>
+    </div>
+
+    <div class="footer">
+      <p>⚠️ 请合理使用，避免频繁操作导致账号受限</p>
+      <button id="reloadBtn" class="btn btn-secondary" style="margin-top:8px;font-size:12px;padding:4px 12px;">🔄 重载插件</button>
+    </div>
+  </div>
+
+  <script src="blocklist.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
