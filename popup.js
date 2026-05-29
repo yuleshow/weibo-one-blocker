@@ -238,4 +238,17 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("reloadBtn").addEventListener("click", () => {
     chrome.runtime.reload();
   });
+
+  // About modal
+  const aboutModal = document.getElementById("aboutModal");
+  document.getElementById("aboutLink").addEventListener("click", (e) => {
+    e.preventDefault();
+    aboutModal.style.display = "flex";
+  });
+  document.getElementById("closeAbout").addEventListener("click", () => {
+    aboutModal.style.display = "none";
+  });
+  aboutModal.addEventListener("click", (e) => {
+    if (e.target === aboutModal) aboutModal.style.display = "none";
+  });
 });

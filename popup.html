@@ -42,7 +42,27 @@
 
     <div class="footer">
       <p>⚠️ 请合理使用，避免频繁操作导致账号受限</p>
-      <button id="reloadBtn" class="btn btn-secondary" style="margin-top:8px;font-size:12px;padding:4px 12px;">🔄 重载插件</button>
+      <div class="footer-links">
+        <a href="https://github.com/yuleshow/weibo-one-blocker" target="_blank">GitHub</a>
+        <span>·</span>
+        <a href="#" id="aboutLink">关于</a>
+        <span>·</span>
+        <button id="reloadBtn" class="btn-link">🔄 重载插件</button>
+      </div>
+    </div>
+
+    <div id="aboutModal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <h3>微博一键拉黑</h3>
+        <p>版本：v1.1.0</p>
+        <p>批量拉黑微博用户的浏览器扩展，支持用户名、UID 和链接输入。</p>
+        <p>黑名单自动从 GitHub 同步，每小时更新一次。</p>
+        <hr>
+        <p>作者：<a href="https://github.com/yuleshow" target="_blank">yuleshow</a></p>
+        <p>源码：<a href="https://github.com/yuleshow/weibo-one-blocker" target="_blank">GitHub</a></p>
+        <p>协议：MIT</p>
+        <button id="closeAbout" class="btn btn-secondary" style="margin-top:10px;">关闭</button>
+      </div>
     </div>
   </div>
 
